@@ -3,26 +3,38 @@ import * as bs58 from "bs58";
 import { privateKey } from "./key.json";
 import { Keypair, PublicKey } from "@solana/web3.js";
 import { BN } from "@coral-xyz/anchor";
+import * as fs from "fs";
 const axios = require("axios");
 import base58 from "bs58";
+import FormData from "form-data";
 let client = MemeClient.fromEndpoint("https://api.devnet.solana.com");
 let user = Keypair.fromSecretKey(bs58.decode(privateKey));
 console.log("user", user.publicKey.toBase58());
 
 //名称不能重复
-let name = `name-3`;
-let symbol = "symbol1";
-let uri = "https://amber-worrying-tyrannosaurus-350.mypinata.cloud/ipfs/QmTRMyBtiPpL5jqnqcYVWfzMDJADN8XjJdp1YEMjm6rZCL";
+const name = `name-6`;
+const symbol = "symbol1";
+const description = "description1";
 async function main() {
-    await create();
+    // await create();
     await buy();
 }
 
 async function create() {
+    const form = new FormData();
+    form.append("name", name);
+    form.append("symbol", symbol);
+    form.append("description", description);
+    form.append("file", fs.readFileSync("/tmp/SCR-20240517-ml5.jpeg"), "SCR-20240517-ml5.jpeg");
+    const res = await axios.post("https://b.kepler.homes/api/meme/token/metadata", form, {
+        headers: { ...form.getHeaders() },
+    });
+    const url = res.data.url;
+    console.log("url", url);
     const launchAmount = new BN(10e9);
     const duration = new BN(3600 * 24 * 20);
     const userMaxBuyAmount = new BN(0);
-    const ts = await client.create(user, name, symbol, uri, launchAmount, duration, userMaxBuyAmount);
+    const ts = await client.create(user, name, symbol, url, launchAmount, duration, userMaxBuyAmount);
     logTs("create", ts);
 }
 
