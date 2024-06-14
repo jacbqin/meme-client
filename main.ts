@@ -1,22 +1,22 @@
 import { MemeClient } from "./sdk/sdk";
 import * as bs58 from "bs58";
 import { privateKey } from "./key.json";
-import { Keypair, PublicKey } from "@solana/web3.js";
+import { Keypair } from "@solana/web3.js";
 import { BN } from "@coral-xyz/anchor";
 import * as fs from "fs";
 const axios = require("axios");
-import base58 from "bs58";
 import FormData from "form-data";
 let client = MemeClient.fromEndpoint("https://api.devnet.solana.com");
 let user = Keypair.fromSecretKey(bs58.decode(privateKey));
 console.log("user", user.publicKey.toBase58());
 
-//名称不能重复
+//注意，名称不能重复
 const name = `name-6`;
 const symbol = "symbol1";
 const description = "description1";
+
 async function main() {
-    // await create();
+    await create();
     await buy();
 }
 
