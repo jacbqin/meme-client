@@ -59,8 +59,8 @@ export class MemeClient {
     }
 
     private async exec(signers: Keypair[], ...transactions: (Transaction | TransactionInstruction)[]) {
-        let tx = new Transaction();
-        for (let i of transactions) {
+        const tx = new Transaction();
+        for (const i of transactions) {
             tx.add(i);
         }
         return await anchor.web3.sendAndConfirmTransaction(this.connection, tx, signers, { skipPreflight: true });

@@ -487,6 +487,153 @@ export type Meme = {
       }
     }
   ],
+  "events": [
+    {
+      "name": "BuyEvent",
+      "fields": [
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "solAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "tokenAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "time",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "CreateEvent",
+      "fields": [
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "mint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "symbol",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "uri",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "time",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "MintEvent",
+      "fields": [
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "mint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "launchAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "duration",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "userMaxBuyAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "amount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "time",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "EmergencyWithdrawTokenEvent",
+      "fields": [
+        {
+          "name": "to",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "mint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "amount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "time",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "EmergencyWithdrawSolEvent",
+      "fields": [
+        {
+          "name": "to",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "amount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "time",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    }
+  ],
   "errors": [
     {
       "code": 6000,
@@ -988,6 +1135,153 @@ export const IDL: Meme = {
           }
         ]
       }
+    }
+  ],
+  "events": [
+    {
+      "name": "BuyEvent",
+      "fields": [
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "solAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "tokenAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "time",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "CreateEvent",
+      "fields": [
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "mint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "symbol",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "uri",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "time",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "MintEvent",
+      "fields": [
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "mint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "launchAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "duration",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "userMaxBuyAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "amount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "time",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "EmergencyWithdrawTokenEvent",
+      "fields": [
+        {
+          "name": "to",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "mint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "amount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "time",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "EmergencyWithdrawSolEvent",
+      "fields": [
+        {
+          "name": "to",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "amount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "time",
+          "type": "i64",
+          "index": false
+        }
+      ]
     }
   ],
   "errors": [
