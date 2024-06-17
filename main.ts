@@ -11,13 +11,13 @@ let user = Keypair.fromSecretKey(bs58.decode(privateKey));
 console.log("user", user.publicKey.toBase58());
 
 //注意，名称不能重复
-const name = `name-6`;
+const name = `name-001`;
 const symbol = "symbol1";
 const description = "description1";
 
 async function main() {
     await create();
-    await buy();
+    // await buy();
 }
 
 async function create() {

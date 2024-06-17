@@ -14,7 +14,7 @@ export class MemeClient {
     public eventParser: EventParser;
     public endpoint: string;
 
-    public static programId: string = "FLkvTZJrcHmUBKZiN5fzggkbFYyvAzz3W4jbBaeasDHN";
+    public static programId: string = "9EmV9ugKE8zSpVcrCxixgn95aUFKeJ6vv5UwZh6LTCra";
 
     public static fromEndpoint(endpoint: string) {
         const provider = new AnchorProvider(new Connection(endpoint), null, AnchorProvider.defaultOptions());
@@ -35,11 +35,15 @@ export class MemeClient {
     }
 
     findMemeAccountPDA() {
-        return PublicKey.findProgramAddressSync([Buffer.from("MEME")], this.program.programId)[0];
+        return PublicKey.findProgramAddressSync([Buffer.from("Meme")], this.program.programId)[0];
     }
 
     findMintAccountPDA(mint: PublicKey) {
         return PublicKey.findProgramAddressSync([Buffer.from("Mint"), mint.toBuffer()], this.program.programId)[0];
+    }
+
+    findUserAccountPDA(mint: PublicKey, user: PublicKey) {
+        return PublicKey.findProgramAddressSync([Buffer.from("User"), mint.toBuffer(), user.toBuffer()], this.program.programId)[0];
     }
 
     findVaultSolAccountPDA() {
@@ -58,6 +62,10 @@ export class MemeClient {
         return await this.program.account.mintAccount.fetchNullable(this.findMintAccountPDA(mint));
     }
 
+    async queryUserAccount(mint: PublicKey, user: PublicKey) {
+        return await this.program.account.userAccount.fetchNullable(this.findUserAccountPDA(mint, user));
+    }
+
     private async exec(signers: Keypair[], ...transactions: (Transaction | TransactionInstruction)[]) {
         const tx = new Transaction();
         for (const i of transactions) {
@@ -66,8 +74,8 @@ export class MemeClient {
         return await anchor.web3.sendAndConfirmTransaction(this.connection, tx, signers, { skipPreflight: true });
     }
 
-    async initializeMeme(admin: Keypair, feeTo: PublicKey, tokenLiquidityAmount: BN, tokenLauchAmount: BN, buyFee: BN, createFee: BN) {
-        const method = this.program.methods.initializeMeme(feeTo, tokenLiquidityAmount, tokenLauchAmount, buyFee, createFee).accounts({
+    async initializeMeme(admin: Keypair, feeTo: PublicKey, tokenLauchAmount: BN, tokenLiquidityAmount: BN, buyFee: BN, refundFee: BN, createFee: BN) {
+        const method = this.program.methods.initializeMeme(feeTo, tokenLauchAmount, tokenLiquidityAmount, buyFee, refundFee, createFee).accounts({
             admin: admin.publicKey,
             memeAccount: this.findMemeAccountPDA(),
             rent: SYSVAR_RENT_PUBKEY,
@@ -77,8 +85,8 @@ export class MemeClient {
         return this.exec([admin], await method.transaction());
     }
 
-    async updateMeme(admin: Keypair, feeTo: PublicKey, tokenLiquidityAmount: BN, tokenLauchAmount: BN, buyFee: BN, createFee: BN) {
-        const method = this.program.methods.updateMeme(feeTo, tokenLiquidityAmount, tokenLauchAmount, buyFee, createFee).accounts({
+    async updateMeme(admin: Keypair, feeTo: PublicKey, tokenLauchAmount: BN, tokenLiquidityAmount: BN, buyFee: BN, refundFee: BN, createFee: BN) {
+        const method = this.program.methods.updateMeme(feeTo, tokenLauchAmount, tokenLiquidityAmount, buyFee, refundFee, createFee).accounts({
             admin: admin.publicKey,
             memeAccount: this.findMemeAccountPDA(),
             systemProgram: SystemProgram.programId,
@@ -124,17 +132,37 @@ export class MemeClient {
         const method = this.program.methods.buy(tokenAmount).accounts({
             user: user.publicKey,
             memeAccount: this.findMemeAccountPDA(),
+            mintAccount: this.findMintAccountPDA(mint),
+            userAccount: this.findUserAccountPDA(mint, user.publicKey),
             tokenMint: mint,
             feeTo,
             vaultTokenAccount: this.findVaultTokenAccountPDA(mint),
             userTokenAccount: spl.getAssociatedTokenAddressSync(mint, user.publicKey),
-            mintAccount: this.findMintAccountPDA(mint),
             vaultSolAccount: this.findVaultSolAccountPDA(),
             tokenProgram: TOKEN_PROGRAM_ID,
             systemProgram: SystemProgram.programId,
         });
         // return method.signers([user]).rpc();
         return this.exec([user], await method.transaction());
+    }
+
+    async refund(user: Keypair, mint: PublicKey) {
+        const feeTo = (await this.queryMemeAccount()).feeTo;
+        const method = this.program.methods.refund().accounts({
+            user: user.publicKey,
+            memeAccount: this.findMemeAccountPDA(),
+            mintAccount: this.findMintAccountPDA(mint),
+            userAccount: this.findUserAccountPDA(mint, user.publicKey),
+            tokenMint: mint,
+            feeTo,
+            vaultTokenAccount: this.findVaultTokenAccountPDA(mint),
+            userTokenAccount: spl.getAssociatedTokenAddressSync(mint, user.publicKey),
+            vaultSolAccount: this.findVaultSolAccountPDA(),
+            tokenProgram: TOKEN_PROGRAM_ID,
+            systemProgram: SystemProgram.programId,
+        });
+        return method.signers([user]).rpc();
+        // return this.exec([user], await method.transaction());
     }
 
     async emergencyWithdrawSol(user: Keypair, to: PublicKey, amount: BN) {

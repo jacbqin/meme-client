@@ -5,7 +5,7 @@ export type Meme = {
     {
       "name": "MEME_SEED",
       "type": "string",
-      "value": "\"MEME\""
+      "value": "\"Meme\""
     },
     {
       "name": "VALUT_SEED",
@@ -16,6 +16,11 @@ export type Meme = {
       "name": "MINT_SEED",
       "type": "string",
       "value": "\"Mint\""
+    },
+    {
+      "name": "USER_SEED",
+      "type": "string",
+      "value": "\"User\""
     }
   ],
   "instructions": [
@@ -49,15 +54,19 @@ export type Meme = {
           "type": "publicKey"
         },
         {
-          "name": "tokenLiquidityAmount",
-          "type": "u64"
-        },
-        {
           "name": "tokenLaunchAmount",
           "type": "u64"
         },
         {
+          "name": "tokenLiquidityAmount",
+          "type": "u64"
+        },
+        {
           "name": "buyFee",
+          "type": "u64"
+        },
+        {
+          "name": "refundFee",
           "type": "u64"
         },
         {
@@ -91,15 +100,19 @@ export type Meme = {
           "type": "publicKey"
         },
         {
-          "name": "tokenLiquidityAmount",
-          "type": "u64"
-        },
-        {
           "name": "tokenLaunchAmount",
           "type": "u64"
         },
         {
+          "name": "tokenLiquidityAmount",
+          "type": "u64"
+        },
+        {
           "name": "buyFee",
+          "type": "u64"
+        },
+        {
+          "name": "refundFee",
           "type": "u64"
         },
         {
@@ -254,6 +267,16 @@ export type Meme = {
           "isSigner": false
         },
         {
+          "name": "mintAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "tokenMint",
           "isMut": true,
           "isSigner": false
@@ -270,11 +293,6 @@ export type Meme = {
         },
         {
           "name": "vaultSolAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "mintAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -305,6 +323,72 @@ export type Meme = {
           "type": "u64"
         }
       ]
+    },
+    {
+      "name": "refund",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "memeAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mintAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultSolAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "feeTo",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
     },
     {
       "name": "emergencyWithdrawSol",
@@ -432,6 +516,10 @@ export type Meme = {
             "type": "u64"
           },
           {
+            "name": "refundFee",
+            "type": "u64"
+          },
+          {
             "name": "createFee",
             "type": "u64"
           }
@@ -468,11 +556,19 @@ export type Meme = {
             "type": "u64"
           },
           {
+            "name": "tokenRefundAmount",
+            "type": "u64"
+          },
+          {
             "name": "tokenSoldAmount",
             "type": "u64"
           },
           {
-            "name": "solAmount",
+            "name": "solSoldAmount",
+            "type": "u64"
+          },
+          {
+            "name": "solRefundAmount",
             "type": "u64"
           },
           {
@@ -481,6 +577,26 @@ export type Meme = {
           },
           {
             "name": "createTime",
+            "type": "u64"
+          },
+          {
+            "name": "status",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "userAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "solAmount",
+            "type": "u64"
+          },
+          {
+            "name": "tokenAmount",
             "type": "u64"
           }
         ]
@@ -493,6 +609,11 @@ export type Meme = {
       "fields": [
         {
           "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "mint",
           "type": "publicKey",
           "index": false
         },
@@ -562,11 +683,6 @@ export type Meme = {
           "index": false
         },
         {
-          "name": "launchAmount",
-          "type": "u64",
-          "index": false
-        },
-        {
           "name": "duration",
           "type": "u64",
           "index": false
@@ -577,7 +693,52 @@ export type Meme = {
           "index": false
         },
         {
-          "name": "amount",
+          "name": "tokenLaunchAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "tokenLiquidityAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "solLaunchAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "tokenPrice",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "time",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "RefundEvent",
+      "fields": [
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "mint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "solAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "tokenAmount",
           "type": "u64",
           "index": false
         },
@@ -655,7 +816,7 @@ export const IDL: Meme = {
     {
       "name": "MEME_SEED",
       "type": "string",
-      "value": "\"MEME\""
+      "value": "\"Meme\""
     },
     {
       "name": "VALUT_SEED",
@@ -666,6 +827,11 @@ export const IDL: Meme = {
       "name": "MINT_SEED",
       "type": "string",
       "value": "\"Mint\""
+    },
+    {
+      "name": "USER_SEED",
+      "type": "string",
+      "value": "\"User\""
     }
   ],
   "instructions": [
@@ -699,15 +865,19 @@ export const IDL: Meme = {
           "type": "publicKey"
         },
         {
-          "name": "tokenLiquidityAmount",
-          "type": "u64"
-        },
-        {
           "name": "tokenLaunchAmount",
           "type": "u64"
         },
         {
+          "name": "tokenLiquidityAmount",
+          "type": "u64"
+        },
+        {
           "name": "buyFee",
+          "type": "u64"
+        },
+        {
+          "name": "refundFee",
           "type": "u64"
         },
         {
@@ -741,15 +911,19 @@ export const IDL: Meme = {
           "type": "publicKey"
         },
         {
-          "name": "tokenLiquidityAmount",
-          "type": "u64"
-        },
-        {
           "name": "tokenLaunchAmount",
           "type": "u64"
         },
         {
+          "name": "tokenLiquidityAmount",
+          "type": "u64"
+        },
+        {
           "name": "buyFee",
+          "type": "u64"
+        },
+        {
+          "name": "refundFee",
           "type": "u64"
         },
         {
@@ -904,6 +1078,16 @@ export const IDL: Meme = {
           "isSigner": false
         },
         {
+          "name": "mintAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "tokenMint",
           "isMut": true,
           "isSigner": false
@@ -920,11 +1104,6 @@ export const IDL: Meme = {
         },
         {
           "name": "vaultSolAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "mintAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -955,6 +1134,72 @@ export const IDL: Meme = {
           "type": "u64"
         }
       ]
+    },
+    {
+      "name": "refund",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "memeAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mintAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultSolAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "feeTo",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
     },
     {
       "name": "emergencyWithdrawSol",
@@ -1082,6 +1327,10 @@ export const IDL: Meme = {
             "type": "u64"
           },
           {
+            "name": "refundFee",
+            "type": "u64"
+          },
+          {
             "name": "createFee",
             "type": "u64"
           }
@@ -1118,11 +1367,19 @@ export const IDL: Meme = {
             "type": "u64"
           },
           {
+            "name": "tokenRefundAmount",
+            "type": "u64"
+          },
+          {
             "name": "tokenSoldAmount",
             "type": "u64"
           },
           {
-            "name": "solAmount",
+            "name": "solSoldAmount",
+            "type": "u64"
+          },
+          {
+            "name": "solRefundAmount",
             "type": "u64"
           },
           {
@@ -1131,6 +1388,26 @@ export const IDL: Meme = {
           },
           {
             "name": "createTime",
+            "type": "u64"
+          },
+          {
+            "name": "status",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "userAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "solAmount",
+            "type": "u64"
+          },
+          {
+            "name": "tokenAmount",
             "type": "u64"
           }
         ]
@@ -1143,6 +1420,11 @@ export const IDL: Meme = {
       "fields": [
         {
           "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "mint",
           "type": "publicKey",
           "index": false
         },
@@ -1212,11 +1494,6 @@ export const IDL: Meme = {
           "index": false
         },
         {
-          "name": "launchAmount",
-          "type": "u64",
-          "index": false
-        },
-        {
           "name": "duration",
           "type": "u64",
           "index": false
@@ -1227,7 +1504,52 @@ export const IDL: Meme = {
           "index": false
         },
         {
-          "name": "amount",
+          "name": "tokenLaunchAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "tokenLiquidityAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "solLaunchAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "tokenPrice",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "time",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "RefundEvent",
+      "fields": [
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "mint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "solAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "tokenAmount",
           "type": "u64",
           "index": false
         },
